@@ -16,8 +16,8 @@ class PredictorTest(unittest.TestCase):
 
     def setUp(self):
         pnets = [
-            keeper.ParametricNet(10, 1, 100),
-            keeper.ParametricNet(10, 1, 100)
+            keeper.ParametricNet(4, 1, 100),
+            keeper.ParametricNet(4, 1, 100)
         ]
 
         self.pd = keeper.Predictor(*pnets)
@@ -27,10 +27,10 @@ class PredictorTest(unittest.TestCase):
         start_time = time.time()
         x = lambda t: 5 * (t - start_time)
         y = lambda t: -9.81 * 0.5 * math.pow(t - start_time, 2) + 100
-        for i in xrange(1000):
+        while True:
             current_time = time.time()
             self.pd.push(x(current_time), y(current_time))
-            print self.pd(1)
+            print self.pd(10), x(start_time + 10), y(start_time + 10)
 
 
 if __name__ == "__main__":
