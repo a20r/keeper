@@ -1,5 +1,4 @@
 
-
 class Predictor(object):
 
     def __init__(self, *pnets):
