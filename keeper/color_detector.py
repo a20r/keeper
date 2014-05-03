@@ -1,5 +1,8 @@
 #!/usr/bin/env python2.7
+import sys
+
 import cv2
+import freenect
 import numpy as np
 
 
@@ -81,6 +84,22 @@ class ColorDetector(object):
 
         return (hue, sat, val)
 
+    def get_hsv_values(self):
+        # get hsv values from hsv gui
+        lbound = (
+            cv2.getTrackbarPos("Hue Min", "hsv"),
+            cv2.getTrackbarPos("Sat Min", "hsv"),
+            cv2.getTrackbarPos("Val Min", "hsv")
+        )
+
+        ubound = (
+            cv2.getTrackbarPos("Hue Max", "hsv"),
+            cv2.getTrackbarPos("Sat Max", "hsv"),
+            cv2.getTrackbarPos("Val Max", "hsv")
+        )
+
+        return (lbound, ubound)
+
     def update_hsv_gui(self, hsv, hue_range=10):
         hue, sat, val = hsv
 
@@ -139,66 +158,66 @@ class ColorDetector(object):
 
         return detected
 
+    def display(self, frame):
+        # draw detection area
+        if self.detection_area:
+            self.draw_detection_area(frame)
+
+        # detect hsv value in detection area and update hsv gui
+        if self.get_hsv:
+            hsv = self.pixel_get_hsv(frame)
+            self.update_hsv_gui(hsv)
+
+        # draw video and threshold windows
+        lbound, ubound = self.get_hsv_values()
+        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        thres_frame = cv2.inRange(hsv_frame, lbound, ubound)
+
+        cv2.imshow('Threshold', thres_frame)
+
+        # detect color objects
+        del detected_objects[:]
+        objects = self.detect_color(frame, thres_frame)
+        detected_objects.extend(objects)
+
+    def events(self, video_frame, cleanup_func=None):
+        # keyboard events
+        key = cv2.waitKey(50)
+
+        if key == 27 or key == ord('q'):
+            if cleanup_func is None:
+                sys.exit(0)
+            else:
+                cleanup_func()
+
+        elif key == ord('d'):
+            self.detection_area = not self.detection_area
+
+        elif key == ord('h'):
+            self.get_hsv = not self.get_hsv
+
+        else:
+            self.display(video_frame)
+
     def cleanup(self):
         self.capture.release()
         cv2.destroyAllWindows()
 
-    def run(self, detected_objects):
+    def init_webcam(self, detected_objects):
         while (self.capture.isOpened()):
             ret, frame = self.capture.read()
-            key = cv2.waitKey(50)
+            self.events(frame, self.cleanup())
 
-            if ret:
-                if key == 27 or key == ord('q'):
-                    self.cleanup()
-
-                elif key == ord('d'):
-                    self.detection_area = not self.detection_area
-
-                elif key == ord('h'):
-                    self.get_hsv = not self.get_hsv
-
-                else:
-                    # draw detection area
-                    if self.detection_area:
-                        self.draw_detection_area(frame)
-
-                    # detect hsv value in detection area and update hsv gui
-                    if self.get_hsv:
-                        hsv = self.pixel_get_hsv(frame)
-                        self.update_hsv_gui(hsv)
-
-                    # get hsv values from hsv gui
-                    lbound = (
-                        cv2.getTrackbarPos("Hue Min", "hsv"),
-                        cv2.getTrackbarPos("Sat Min", "hsv"),
-                        cv2.getTrackbarPos("Val Min", "hsv")
-                    )
-
-                    ubound = (
-                        cv2.getTrackbarPos("Hue Max", "hsv"),
-                        cv2.getTrackbarPos("Sat Max", "hsv"),
-                        cv2.getTrackbarPos("Val Max", "hsv")
-                    )
-
-                    # draw video and threshold windows
-                    hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-                    thres_frame = cv2.inRange(hsv_frame, lbound, ubound)
-
-                    # cv2.imshow('Video Stream', frame)
-                    cv2.imshow('Threshold', thres_frame)
-
-                    # detect color objects
-                    del detected_objects[:]
-                    objects = self.detect_color(frame, thres_frame)
-                    detected_objects.extend(objects)
-            else:
-                break
+    def init_kinect(self, detected_object):
+        while True:
+            img = freenect.sync_get_video()[0]
+            frame = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+            self.events(frame)
 
 
 if __name__ == "__main__":
     detected_objects = []
     detector = ColorDetector()
-    detector.run(detected_objects)
+    detector.init_kinect(detected_objects)
 
     print "Detected objects:", detected_objects
