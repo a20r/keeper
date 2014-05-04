@@ -15,11 +15,6 @@ unittests_bin_dir = "tests"
 unittests_log_dir = "unittests_log"
 unittests_file_pattern = "^[a-zA-Z0-9_]*_tests.*$"
 
-cmd_dict = {
-    "sh": "bash",
-    "py": "python"
-}
-
 class TC:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -79,7 +74,7 @@ if __name__ == "__main__":
             unittest_output = open(unittest_output_fp, 'w')
 
             return_val = subprocess.check_call(
-                [cmd_dict[unittest.split(".")[-1]], "./{0}".format(unittest)],
+                ["./{0}".format(unittest)],
                 stdout=unittest_output,
                 stderr=unittest_output
             )
