@@ -9,6 +9,11 @@ Keeper is a library that uses model selection and curve fitting to help predict 
 ## How it works
 Keeper works by breaking the main regression problem (i.e. *x, y, z*) into three different regression problems, making the functions easier to interpolate. This is done by converting these cartesian coordinates into parametric coordinates indexed by time. This means that we are able to have separate regressions for each dimension. However, this does not factor into how the system is to be used. There is a function in the predictor called `push` which when given a new point, the system will automatically reduce the dimension. Also when predicting a new point, all that is needed is the time that you would like to prediction to be.
 
+Programmatically, how Keeper works is observed data about a tracked object is reported to Keeper in real-time. Keeper then uses this data (in real-time) to create models of the movement for the tracked object. This is shown in the tests by a simulated ball being dropped from 100 meters and keeper has show that it is able to continuously predict the position of the ball. As time increases, the size of the training set increases and therefore the error rate decreases.
+
+## Use case
+Keeper is designed to work in real-time for mobile robotics. We are adding functionality to combine the Kinect with Keeper such that given a classifier, the Kinect will be able to track and report the observed positions of a tracked object to Keeper. This will allow keeper to learn and interpolate movement of the tracked object. Keeper will then be able to inform a planning algorithm about the future positions of objects in the environment allowing the algorithm to plan ahead and account for the movements of obstacles, other robots, etc.
+
 ## To Run
 
 ### Install
