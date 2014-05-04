@@ -6,15 +6,15 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import unittest
 import keeper
-import util
+import predictor_template as pt
 
 
-class NetTest(util.PredictorTest, unittest.TestCase):
+class NetTest(pt.PredictorTest, unittest.TestCase):
 
     def setUp(self):
         fitters = [
-            keeper.ParametricNet(10, 1, 10),
-            keeper.ParametricNet(10, 1, 10)
+            keeper.ParametricNet(10, 1, 30),
+            keeper.ParametricNet(10, 1, 30)
         ]
 
         self.pd = keeper.Predictor(*fitters)
