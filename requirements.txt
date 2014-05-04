@@ -1,1 +1,4 @@
 neurolab
+numpy
+scipy
+matplotlib
