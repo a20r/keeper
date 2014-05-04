@@ -30,7 +30,6 @@ class PredictorTest(object):
 
         for i in xrange(NUM_ITER):
             current_time = time.time()
-            # print self.x(current_time)
             self.pd.push(self.x(current_time), self.y(current_time))
 
             if i > 10:

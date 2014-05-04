@@ -45,8 +45,6 @@ class ParametricModel(object):
                 min_popt = popt
                 min_model = model
 
-        # print min_model.func_name
-
         return lambda t: min_model(t, *min_popt)
 
     def push(self, out, t=None):
