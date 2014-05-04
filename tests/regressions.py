@@ -32,4 +32,4 @@ class Sin(object):
         return (t - self.start_time)
 
     def y(self, t):
-        return np.sin(t - self.start_time) + random.random()
+        return np.sin(t - self.start_time)
