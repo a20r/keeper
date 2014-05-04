@@ -33,6 +33,10 @@ class NetExpTest(NetTest, unittest.TestCase, reg.Exp):
     pass
 
 
+class NetSinTest(NetTest, unittest.TestCase, reg.Sin):
+    pass
+
+
 if __name__ == "__main__":
     unittest.main()
 

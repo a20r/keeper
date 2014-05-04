@@ -21,17 +21,17 @@ class ModelTest(pt.PredictorTest):
         self.pd = keeper.Predictor(*fitters)
 
 
-# class ModelGravityTest(ModelTest, unittest.TestCase, reg.Gravity):
-#     pass
-#
-#
-# class ModelLinearTest(ModelTest, unittest.TestCase, reg.Linear):
-#     pass
-#
-#
-# class ModelExpTest(ModelTest, unittest.TestCase, reg.Exp):
-#     pass
-#
+class ModelGravityTest(ModelTest, unittest.TestCase, reg.Gravity):
+    pass
+
+
+class ModelLinearTest(ModelTest, unittest.TestCase, reg.Linear):
+    pass
+
+
+class ModelExpTest(ModelTest, unittest.TestCase, reg.Exp):
+    pass
+
 
 class ModelSinTest(ModelTest, unittest.TestCase, reg.Sin):
     pass
