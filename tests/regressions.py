@@ -1,5 +1,6 @@
 
 import numpy as np
+import random
 
 
 class Gravity(object):
@@ -23,7 +24,7 @@ class Exp(object):
         return (t - self.start_time)
 
     def y(self, t):
-        return np.exp(t - self.start_time)
+        return np.exp(t - self.start_time) + 10
 
 
 class Sin(object):
@@ -31,4 +32,4 @@ class Sin(object):
         return (t - self.start_time)
 
     def y(self, t):
-        return np.sin(t - self.start_time)
+        return np.sin(t - self.start_time) + random.random()

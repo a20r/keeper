@@ -36,7 +36,7 @@ class ParametricModel(object):
         for model in self.models:
             try:
                 popt, pcov = opt.curve_fit(model, inp_array, out_array)
-            except RuntimeError:
+            except (RuntimeError, RuntimeWarning):
                 continue
 
             ssr = self.get_ssr(popt, model)

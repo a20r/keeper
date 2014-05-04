@@ -16,11 +16,10 @@ class PredictorTest(object):
             self.start_time, self.start_time + self.how_far, 100
         )
 
-        X = self.x(t)
-        Y = self.y(t)
+        self.X = self.x(t)
+        self.Y = self.y(t)
         plt.ion()
-        self.graph = plt.plot(X, Y, "r")[0]
-        self.truth_graph = plt.plot(X, Y, "g")[0]
+        self.graph = plt.plot(self.X, self.Y, "r")[0]
 
     def test_prediction(self):
         self.start_time = time.time()
@@ -40,6 +39,14 @@ class PredictorTest(object):
                     XS.append(ret_list[0])
                     YS.append(ret_list[1])
 
+                progression = int(
+                    100 * (current_time - self.start_time) /
+                    (self.how_far)
+                )
+
+                self.truth_graph = plt.plot(
+                    self.X[:progression], self.Y[:progression], "g"
+                )[0]
                 self.graph.set_xdata(XS)
                 self.graph.set_ydata(YS)
                 plt.draw()
