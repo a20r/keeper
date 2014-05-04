@@ -1,9 +1,9 @@
 
 class Predictor(object):
 
-    def __init__(self, *pnets):
-        self.num_dim = len(pnets)
-        self.pnets = pnets
+    def __init__(self, *fitters):
+        self.num_dim = len(fitters)
+        self.fitters = fitters
 
     def push(self, *ps):
         if not len(ps) == self.num_dim:
@@ -11,10 +11,10 @@ class Predictor(object):
                 "Dimension of input does not match internal dimension"
             )
 
-        for out, net in zip(ps, self.pnets):
-            net.push(out)
+        for out, fitter in zip(ps, self.fitters):
+            fitter.push(out)
 
         return self
 
     def __call__(self, t):
-        return [net(t) for net in self.pnets]
+        return [fitter(t) for fitter in self.fitters]

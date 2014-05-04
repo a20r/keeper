@@ -21,9 +21,6 @@ class ParametricNet(object):
             ]
         )
 
-        self.last_time_collected = 0
-        self.collection_delay = 0.4
-
     def set_input_bounds(self, input_bounds):
         self.input_bounds = input_bounds
         return self
@@ -50,16 +47,13 @@ class ParametricNet(object):
         return self.net
 
     def push(self, out, t=None):
-        if time.time() - self.last_time_collected > self.collection_delay:
+        if t is None:
+            self.inp.append(time.time() - self.start_time)
+        else:
+            self.inp.append(t)
 
-            if t is None:
-                self.inp.append(time.time() - self.start_time)
-            else:
-                self.inp.append(t)
-
-            self.out.append(out)
-            self.get_neural_network()
-            self.last_time_collected = time.time()
+        self.out.append(out)
+        self.get_neural_network()
 
         return self
 
