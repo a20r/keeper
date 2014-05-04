@@ -3,7 +3,6 @@ import time
 import math
 import pylab as plt
 import numpy as np
-import util
 
 
 NUM_ITER = 150
