@@ -15,6 +15,8 @@ class ParametricModel(object):
         self.current_model = None
         self.new_data = False
         self.start_time = kwargs.get("start_time", time.time())
+        self.name = kwargs.get("name", "N/A")
+        self.current_model_name = ""
 
     def init_models(self, models):
         func_tuples = inspect.getmembers(models, inspect.isfunction)
@@ -45,6 +47,7 @@ class ParametricModel(object):
                 min_popt = popt
                 min_model = model
 
+        self.current_model_name = min_model.func_name
         return lambda t: min_model(t, *min_popt)
 
     def push(self, out, t=None):
@@ -65,3 +68,9 @@ class ParametricModel(object):
             raise NameError("Model not yet selected")
 
         return self.current_model(t)
+
+    def __str__(self):
+        try:
+            return "{}: {}".format(self.name, self.current_model_name)
+        except:
+            return ""

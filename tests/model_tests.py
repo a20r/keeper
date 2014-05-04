@@ -14,8 +14,8 @@ class ModelTest(pt.PredictorTest):
 
     def setUp(self):
         fitters = [
-            keeper.ParametricModel(100, keeper.models),
-            keeper.ParametricModel(100, keeper.models)
+            keeper.ParametricModel(100, keeper.models, name="X"),
+            keeper.ParametricModel(100, keeper.models, name="Y")
         ]
 
         self.pd = keeper.Predictor(*fitters)
@@ -34,6 +34,14 @@ class ModelExpTest(ModelTest, unittest.TestCase, reg.Exp):
 
 
 class ModelSinTest(ModelTest, unittest.TestCase, reg.Sin):
+    pass
+
+
+class ModelLogTest(ModelTest, unittest.TestCase, reg.Log):
+    pass
+
+
+class ModelCircleTest(ModelTest, unittest.TestCase, reg.Circle):
     pass
 
 

@@ -6,23 +6,24 @@ import numpy as np
 
 
 NUM_ITER = 150
+NUM_PARTS = 1000
 
 
 class PredictorTest(object):
 
     def init_graph(self):
         t = np.linspace(
-            self.start_time, self.start_time + self.how_far, 100
+            self.start_time, self.start_time + self.how_far, NUM_PARTS
         )
 
         self.X = self.x(t)
         self.Y = self.y(t)
         plt.ion()
-        self.graph = plt.plot(self.X, self.Y, "r")[0]
         self.truth_graph = plt.plot(self.X, self.Y, "b")[0]
         self.progression_graph = plt.plot(
             self.X[:0], self.Y[:0], "g", linewidth=5
         )[0]
+        self.graph = plt.plot(self.X, self.Y, "r")[0]
 
     def test_prediction(self):
         self.start_time = time.time()
@@ -37,13 +38,13 @@ class PredictorTest(object):
             if i > 10:
                 XS = list()
                 YS = list()
-                for t in np.linspace(0, self.how_far, 100):
+                for t in np.linspace(0, self.how_far, NUM_PARTS):
                     ret_list = self.pd(t)
                     XS.append(ret_list[0])
                     YS.append(ret_list[1])
 
                 progression = int(
-                    100 * (current_time - self.start_time) /
+                    NUM_PARTS * (current_time - self.start_time) /
                     (self.how_far)
                 )
 
