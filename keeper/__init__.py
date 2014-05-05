@@ -1,5 +1,4 @@
 
-from predictor import *
-from pmodel import *
-import models
-
+from keeper.predictor import Predictor
+from keeper.pmodel import ParametricModel
+import keeper.models
