@@ -4,6 +4,8 @@ import time
 import scipy.optimize as opt
 import numpy as np
 import inspect
+import functools
+import models
 
 
 class ParametricModel(object):
@@ -16,11 +18,11 @@ class ParametricModel(object):
         self.new_data = False
         self.start_time = kwargs.get("start_time", time.time())
         self.name = kwargs.get("name", "N/A")
-        self.current_model_name = ""
+        self.current_model_name = "N/A"
 
     def init_models(self, models):
-        func_tuples = inspect.getmembers(models, inspect.isfunction)
-        return [f for _, f in func_tuples]
+        class_tuples = inspect.getmembers(models, inspect.isclass)
+        return [cls() for _, cls in class_tuples]
 
     def get_in_out_arrays(self):
         return np.array(list(self.inp)), np.array(list(self.out))
@@ -37,7 +39,7 @@ class ParametricModel(object):
         min_popt = None
         for model in self.models:
             try:
-                popt, pcov = opt.curve_fit(model, inp_array, out_array)
+                popt, pcov = opt.curve_fit(model.func(), inp_array, out_array)
             except (RuntimeError, RuntimeWarning):
                 continue
 
@@ -47,7 +49,7 @@ class ParametricModel(object):
                 min_popt = popt
                 min_model = model
 
-        self.current_model_name = min_model.func_name
+        self.current_model_name = min_model.get_str(*min_popt)
         return lambda t: min_model(t, *min_popt)
 
     def push(self, out, t=None):
@@ -70,7 +72,4 @@ class ParametricModel(object):
         return self.current_model(t)
 
     def __str__(self):
-        try:
-            return "{}: {}".format(self.name, self.current_model_name)
-        except:
-            return ""
+        return "{}(t) = {}".format(self.name, self.current_model_name)
