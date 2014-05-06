@@ -1,6 +1,5 @@
 #!/usr/bin/env python2
 import numpy as np
-import random
 
 
 class Gravity(object):
@@ -8,7 +7,7 @@ class Gravity(object):
         return 5 * (t - self.start_time)
 
     def y(self, t):
-        return -9.81 * 0.5 * np.power(t - self.start_time, 2) + 100
+        return -9.81 * 0.5 * np.power(t - self.start_time, 2) + 100 * t + 100
 
 
 class Linear(object):
@@ -41,6 +40,22 @@ class Circle(object):
 
     def y(self, t):
         return np.sin(t - self.start_time)
+
+
+class LogSin(object):
+    def x(self, t):
+        return 100 * np.log(5 * (t - self.start_time)) + 1
+
+    def y(self, t):
+        return np.sin(t - self.start_time)
+
+
+class SquaredSin(object):
+    def x(self, t):
+        return (t - self.start_time)
+
+    def y(self, t):
+        return np.sin(t - self.start_time) ** 2
 
 
 class Log(object):

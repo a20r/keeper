@@ -2,34 +2,79 @@
 import numpy as np
 
 
-def sin_model(t, a, b, c, d):
-    return a * np.sin(b * t + c) + d
+class SinModel(object):
+
+    def __call__(self, t, a, b, c, d):
+        return a * np.sin(b * t + c) + d
+
+    def func(self):
+        return self.__call__
+
+    def get_str(self, *popt):
+        return "{} * Sin({} * t + {}) + {}".format(*popt)
 
 
-def exp_model(t, a, b, c):
-    return a * np.exp(b * t) + c
+class EvenPolyModel(object):
+
+    def __call__(self, t, a, b, c, d, e):
+        return (
+            a * np.power(t, 4) +
+            b * np.power(t, 3) +
+            c * np.power(t, 2) +
+            d * t + e
+        )
+
+    def func(self):
+        return self.__call__
+
+    def get_str(self, *popt):
+        return ("{0} * t ^ 4 + {1} * t ^ 3 + {2} *"
+                "t ^ 2 + {3} * t + {4}").format(*popt)
 
 
-def log_model(t, a, b, c, d):
-    return a * np.log(b * t + c + 0.000001) + d
+class ExpModel(object):
+
+    def __call__(self, t, a, b, c):
+        return a * np.exp(t) + b
+
+    def func(self):
+        return self.__call__
+
+    def get_str(self, *popt):
+        return "{} * Exp(t) + {}".format(*popt)
 
 
-def power_model(t, a, b, c, d, e):
-    return a * np.power(b * t + c, d) + e
+class LogModel(object):
+
+    def __call__(self, t, a, b, c):
+        return a * np.log(t + b) + c
+
+    def func(self):
+        return self.__call__
+
+    def get_str(self, *popt):
+        return "{} * Log(t + {}) + {}".format(*popt)
 
 
-def even_poly_model(t, a, b, c, d, e):
-    return (
-        a * np.power(t, 4) +
-        b * np.power(t, 3) +
-        c * np.power(t, 2) +
-        d * t + e
-    )
+class SquaredSinModel(object):
+
+    def __call__(self, t, a, b, c, d):
+        return a * np.sin(b * t + c) ** 2 + d
+
+    def func(self):
+        return self.__call__
+
+    def get_str(self, *popt):
+        return "{} * Sin({} * t + {}) ^ 2 + {}".format(*popt)
 
 
-def odd_poly_model(t, a, b, c, d):
-    return (
-        a * np.power(t, 3) +
-        b * np.power(t, 2) +
-        c * np.power(t, 1) + d
-    )
+class PowerModel(object):
+
+    def __call__(self, t, a, b, c, d):
+        return a * np.power(t + b, c) + d
+
+    def func(self):
+        return self.__call__
+
+    def get_str(self, *popt):
+        return "{} * (t + {}) ^ {} + {}".format(*popt)

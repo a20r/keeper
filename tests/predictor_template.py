@@ -27,7 +27,7 @@ class PredictorTest(object):
 
     def test_prediction(self):
         self.start_time = time.time()
-        self.how_far = 100
+        self.how_far = 50
 
         self.init_graph()
 
@@ -36,6 +36,7 @@ class PredictorTest(object):
             self.pd.push(self.x(current_time), self.y(current_time))
 
             if i > 10:
+                print self.pd
                 XS = list()
                 YS = list()
                 for t in np.linspace(0, self.how_far, NUM_PARTS):
@@ -53,6 +54,6 @@ class PredictorTest(object):
                 self.progression_graph.set_xdata(self.X[:progression])
                 self.progression_graph.set_ydata(self.Y[:progression])
                 plt.draw()
-                plt.pause(0.01)
+                plt.pause(0.001)
 
         plt.clf()

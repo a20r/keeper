@@ -30,5 +30,8 @@ This command will run my unit tests. A `matplotlib` window will appear, but it (
 
 What the tests show are a series of functions that are being interpolated by this system. Meaning that there is nothing more than perceived data being entered into the predictor, and it is able to select a model and make predictions on the objects position based on the model.
 
-## Author
+## TODO
+- Bias the weight of the models based on how well it has fit the historical data in the past
+
+### Author
 - Alex Waller

@@ -18,3 +18,9 @@ class Predictor(object):
 
     def __call__(self, t):
         return [fitter(t) for fitter in self.fitters]
+
+    def __str__(self):
+        return "\n".join(str(fitter) for fitter in self.fitters)
+
+    def __len__(self):
+        return len(self.fitters[0].inp)
