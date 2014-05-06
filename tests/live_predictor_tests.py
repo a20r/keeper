@@ -19,8 +19,8 @@ class LivePredictorTests(unittest.TestCase):
         self.how_far = 20
         self.num_parts = 1000
         fitters = [
-            keeper.ParametricModel(11, keeper.models, name="X"),
-            keeper.ParametricModel(11, keeper.models, name="Y")
+            keeper.ParametricModel(100, keeper.models, name="X"),
+            keeper.ParametricModel(100, keeper.models, name="Y")
         ]
 
         self.positions = list()
@@ -40,7 +40,7 @@ class LivePredictorTests(unittest.TestCase):
             if len(tr_points) == 1:
                 tr_point = tr_points[0]
                 self.positions.append(tr_point)
-                self.pd.push(tr_point.x, 480 - tr_point.y)
+                self.pd.push(640 - tr_point.x, 480 - tr_point.y)
 
             if len(self.pd) > 10:
                 XS = list()
@@ -53,7 +53,7 @@ class LivePredictorTests(unittest.TestCase):
                 PXS = list()
                 PYS = list()
                 for position in self.positions:
-                    PXS.append(position.x)
+                    PXS.append(640 - position.x)
                     PYS.append(480 - position.y)
 
                 for i, x in enumerate(XS):
