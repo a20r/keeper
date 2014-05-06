@@ -23,6 +23,8 @@ class LivePredictorTests(unittest.TestCase):
             keeper.ParametricModel(11, keeper.models, name="Y")
         ]
 
+        self.positions = list()
+
         self.pd = keeper.Predictor(*fitters)
 
 
@@ -37,7 +39,8 @@ class LivePredictorTests(unittest.TestCase):
             tr_points = tracker.track()
             if len(tr_points) == 1:
                 tr_point = tr_points[0]
-                self.pd.push(tr_point.x, tr_point.y)
+                self.positions.append(tr_point)
+                self.pd.push(tr_point.x, 480 - tr_point.y)
 
             if len(self.pd) > 10:
                 XS = list()
@@ -46,6 +49,12 @@ class LivePredictorTests(unittest.TestCase):
                     ret_list = self.pd(t)
                     XS.append(ret_list[0])
                     YS.append(ret_list[1])
+
+                PXS = list()
+                PYS = list()
+                for position in self.positions:
+                    PXS.append(position.x)
+                    PYS.append(480 - position.y)
 
                 for i, x in enumerate(XS):
                     if x > 640:
@@ -66,6 +75,12 @@ class LivePredictorTests(unittest.TestCase):
                     self.graph.set_ydata(YS)
                 except:
                     self.graph = plt.plot(XS, YS, "r")[0]
+
+                try:
+                    self.pgraph.set_xdata(PXS)
+                    self.pgraph.set_ydata(PYS)
+                except:
+                    self.pgraph = plt.plot(PXS, PYS, "g")[0]
 
                 plt.draw()
                 plt.pause(0.001)
