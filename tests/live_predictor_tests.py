@@ -19,8 +19,8 @@ class LivePredictorTests(unittest.TestCase):
         self.how_far = 20
         self.num_parts = 1000
         fitters = [
-            keeper.ParametricModel(20, keeper.models, name="X"),
-            keeper.ParametricModel(20, keeper.models, name="Y")
+            keeper.ParametricModel(11, keeper.models, name="X"),
+            keeper.ParametricModel(11, keeper.models, name="Y")
         ]
 
         self.pd = keeper.Predictor(*fitters)
@@ -33,6 +33,7 @@ class LivePredictorTests(unittest.TestCase):
         drawer = keeper.KinectDrawer()
         tracker = keeper.KinectTracker(classifier, drawer)
         for i in xrange(self.num_iter):
+            print self.pd
             tr_points = tracker.track()
             if len(tr_points) == 1:
                 tr_point = tr_points[0]
