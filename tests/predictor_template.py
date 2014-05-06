@@ -27,7 +27,7 @@ class PredictorTest(object):
 
     def test_prediction(self):
         self.start_time = time.time()
-        self.how_far = 100
+        self.how_far = 50
 
         self.init_graph()
 

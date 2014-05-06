@@ -45,6 +45,14 @@ class ModelCircleTest(ModelTest, unittest.TestCase, reg.Circle):
     pass
 
 
+class ModelLogSinTest(ModelTest, unittest.TestCase, reg.LogSin):
+    pass
+
+
+class ModelSquaredSinTest(ModelTest, unittest.TestCase, reg.SquaredSin):
+    pass
+
+
 if __name__ == "__main__":
     unittest.main()
 

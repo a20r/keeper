@@ -28,23 +28,8 @@ class EvenPolyModel(object):
         return self.__call__
 
     def get_str(self, *popt):
-        return "{} * t ^ 4 + {} * t ^ 3 + {} * t ^ 2 + {} * t + {}".format(*popt)
-
-
-class OddPolyModel(object):
-
-    def __call__(self, t, a, b, c, d):
-        return (
-            a * np.power(t, 3) +
-            b * np.power(t, 2) +
-            c * t + d
-        )
-
-    def func(self):
-        return self.__call__
-
-    def get_str(self, *popt):
-        return "{} * t ^ 3 + {} * t ^ 2 + {} * t + {}".format(*popt)
+        return ("{0} * t ^ 4 + {1} * t ^ 3 + {2} *"
+                "t ^ 2 + {3} * t + {4}").format(*popt)
 
 
 class ExpModel(object):
@@ -69,6 +54,18 @@ class LogModel(object):
 
     def get_str(self, *popt):
         return "{} * Log(t + {}) + {}".format(*popt)
+
+
+class SquaredSinModel(object):
+
+    def __call__(self, t, a, b, c, d):
+        return a * np.sin(b * t + c) ** 2 + d
+
+    def func(self):
+        return self.__call__
+
+    def get_str(self, *popt):
+        return "{} * Sin({} * t + {}) ^ 2 + {}".format(*popt)
 
 
 class PowerModel(object):
