@@ -21,3 +21,6 @@ class Predictor(object):
 
     def __str__(self):
         return "\n".join(str(fitter) for fitter in self.fitters)
+
+    def __len__(self):
+        return len(self.fitters[0].inp)

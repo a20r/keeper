@@ -29,3 +29,6 @@ However if this does not work (since I have not tested it yet), please read thro
 This command will run my unit tests. A `matplotlib` window will appear, but it (for some freaking reason) does not feel like being the top window. So you are going to have to click on the damn icon in your start bar.
 
 What the tests show are a series of functions that are being interpolated by this system. Meaning that there is nothing more than perceived data being entered into the predictor, and it is able to select a model and make predictions on the objects position based on the model.
+
+## TODO
+- Bias the weight of the models based on how well it has fit the historical data in the past

@@ -1,6 +1,7 @@
 
 import cv2
 
+
 class KinectDrawer(object):
 
     def __init__(self):
