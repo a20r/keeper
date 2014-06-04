@@ -8,6 +8,8 @@ import unittest
 import keeper
 import pylab as plt
 import numpy as np
+import collections
+import time
 
 
 class LivePredictorTests(unittest.TestCase):
@@ -16,14 +18,15 @@ class LivePredictorTests(unittest.TestCase):
         self.num_iter = 1000
         self.min_depth = 600
         self.min_blob_size = 10000
-        self.how_far = 20
+        self.how_far = 5
         self.num_parts = 1000
+        self.len_data = 20
         fitters = [
-            keeper.ParametricModel(100, keeper.models, name="X"),
-            keeper.ParametricModel(100, keeper.models, name="Y")
+            keeper.ParametricModel(self.len_data, keeper.models, name="X"),
+            keeper.ParametricModel(self.len_data, keeper.models, name="Y")
         ]
 
-        self.positions = list()
+        self.positions = collections.deque(list(), self.len_data)
 
         self.pd = keeper.Predictor(*fitters)
 
@@ -35,18 +38,27 @@ class LivePredictorTests(unittest.TestCase):
         drawer = keeper.KinectDrawer()
         tracker = keeper.KinectTracker(classifier, drawer)
         for i in xrange(self.num_iter):
-            print self.pd
-            tr_points = tracker.track()
-            if len(tr_points) == 1:
+            try:
+                tr_points = tracker.track()
+                print self.pd
+
+                if len(tr_points) == 0:
+                    self.pd.clear()
+                    self.positions = collections.deque(list(), self.len_data)
+                    continue
+
                 tr_point = tr_points[0]
                 self.positions.append(tr_point)
                 self.pd.push(640 - tr_point.x, 480 - tr_point.y)
 
-            if len(self.pd) > 10:
                 XS = list()
                 YS = list()
-                for t in np.linspace(0, self.how_far, self.num_parts):
-                    ret_list = self.pd(t)
+                current_time = time.time()
+                for t in np.linspace(
+                    0, current_time - self.pd.start_time + self.how_far,
+                    self.num_parts
+                ):
+                    ret_list, _ = self.pd(t)
                     XS.append(ret_list[0])
                     YS.append(ret_list[1])
 
@@ -55,20 +67,6 @@ class LivePredictorTests(unittest.TestCase):
                 for position in self.positions:
                     PXS.append(640 - position.x)
                     PYS.append(480 - position.y)
-
-                for i, x in enumerate(XS):
-                    if x > 640:
-                        XS[i] = 640
-
-                    if x < 0:
-                        XS[i] = 0
-
-                for i, y in enumerate(YS):
-                    if y > 480:
-                        YS[i] = 480
-
-                    if y < 0:
-                        YS[i] = 0
 
                 try:
                     self.graph.set_xdata(XS)
@@ -82,9 +80,13 @@ class LivePredictorTests(unittest.TestCase):
                 except:
                     self.pgraph = plt.plot(PXS, PYS, "g")[0]
 
+                plt.xlim(0, 640)
+                plt.ylim(0, 480)
+
                 plt.draw()
                 plt.pause(0.001)
-
+            except Exception as e:
+                print e
 
 if __name__ == "__main__":
     unittest.main()

@@ -3,10 +3,11 @@ import time
 import math
 import pylab as plt
 import numpy as np
+import time
 
 
-NUM_ITER = 150
-NUM_PARTS = 1000
+NUM_ITER = 40
+NUM_PARTS = 50
 
 
 class PredictorTest(object):
@@ -40,7 +41,7 @@ class PredictorTest(object):
                 XS = list()
                 YS = list()
                 for t in np.linspace(0, self.how_far, NUM_PARTS):
-                    ret_list = self.pd(t)
+                    ret_list, _ = self.pd(t)
                     XS.append(ret_list[0])
                     YS.append(ret_list[1])
 
@@ -54,6 +55,6 @@ class PredictorTest(object):
                 self.progression_graph.set_xdata(self.X[:progression])
                 self.progression_graph.set_ydata(self.Y[:progression])
                 plt.draw()
-                plt.pause(0.001)
+                time.sleep(1)
 
         plt.clf()
