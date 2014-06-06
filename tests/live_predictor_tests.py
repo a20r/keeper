@@ -58,7 +58,7 @@ class LivePredictorTests(unittest.TestCase):
                     0, current_time - self.pd.start_time + self.how_far,
                     self.num_parts
                 ):
-                    ret_list, _ = self.pd(t)
+                    ret_list = self.pd(t)
                     XS.append(ret_list[0])
                     YS.append(ret_list[1])
 

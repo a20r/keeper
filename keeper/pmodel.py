@@ -6,6 +6,32 @@ import inspect
 import models
 import random
 import math
+from multiprocessing import Pool
+
+
+def get_model_func(model_f):
+    def get_models(test_list):
+        try:
+            t_inp_array, t_out_array = test_list
+            popt, pcov = opt.curve_fit(
+                model_f, t_inp_array, t_out_array
+            )
+            return popt
+        except (RuntimeError, RuntimeWarning):
+            return list()
+        except TypeError:
+            return None
+
+    return get_models
+
+
+def parallel_model_selector(model, test_lists, num_workers=8):
+    pool = Pool(num_workers)
+    res = pool.map(
+        get_model_func, test_lists
+    )
+
+    return res
 
 
 class ParametricModel(object):
@@ -61,8 +87,8 @@ class ParametricModel(object):
         min_model = None
         min_popt = None
 
-        for t_inp_array, t_out_array in test_lists:
-            for model in self.models:
+        for model in self.models:
+            for t_inp_array, t_out_array in test_lists:
                 try:
                     popt, pcov = opt.curve_fit(
                         model.func(), t_inp_array, t_out_array
@@ -71,6 +97,14 @@ class ParametricModel(object):
                     continue
                 except TypeError:
                     raise Exception("Not enough data")
+
+            #popts = parallel_model_selector(model, test_lists)
+
+            #for popt in popts:
+                #if popt is None:
+                #    raise Exception("Not enough data")
+                #if len(popt) == 0:
+                #    continue
 
                 ssr = self.get_ssr(popt, model)
                 if min_ssr is None or ssr < min_ssr:

@@ -91,7 +91,7 @@ class LiveUncertaintyTests(unittest.TestCase):
 
                 self.norm_list = list()
                 current_time = time.time()
-                t_0 = current_time - self.pd.start_time
+                t_0 = 0
                 t_max = current_time - self.pd.start_time + self.how_far
                 self.cdf = self.pd(t_0, t_max)
 
