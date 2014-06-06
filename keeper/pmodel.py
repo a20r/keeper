@@ -6,32 +6,8 @@ import inspect
 import models
 import random
 import math
+import markov
 from multiprocessing import Pool
-
-
-def get_model_func(model_f):
-    def get_models(test_list):
-        try:
-            t_inp_array, t_out_array = test_list
-            popt, pcov = opt.curve_fit(
-                model_f, t_inp_array, t_out_array
-            )
-            return popt
-        except (RuntimeError, RuntimeWarning):
-            return list()
-        except TypeError:
-            return None
-
-    return get_models
-
-
-def parallel_model_selector(model, test_lists, num_workers=8):
-    pool = Pool(num_workers)
-    res = pool.map(
-        get_model_func, test_lists
-    )
-
-    return res
 
 
 class ParametricModel(object):
@@ -41,12 +17,14 @@ class ParametricModel(object):
         self.inp = collections.deque(list(), inp_size)
         self.out = collections.deque(list(), inp_size)
         self.models = self.init_models(models)
-        self.current_model = None
         self.new_data = False
         self.name = kwargs.get("name", "N/A")
         self.current_model_name = "N/A"
+        self.current_model = None
+        self.current_model_object = None
         self.test_size_const = 0.6
-        self.num_test_lists = 6
+        self.num_test_lists = 2
+        self.mchain = markov.Chain(self.models)
 
     def init_models(self, models):
         class_tuples = inspect.getmembers(models, inspect.isclass)
@@ -55,6 +33,7 @@ class ParametricModel(object):
     def clear(self):
         self.inp = collections.deque(list(), self.inp_size)
         self.out = collections.deque(list(), self.inp_size)
+        self.mchain = markov.Chain(self.models)
         return self
 
     def get_in_out_arrays(self):
@@ -98,21 +77,16 @@ class ParametricModel(object):
                 except TypeError:
                     raise Exception("Not enough data")
 
-            #popts = parallel_model_selector(model, test_lists)
-
-            #for popt in popts:
-                #if popt is None:
-                #    raise Exception("Not enough data")
-                #if len(popt) == 0:
-                #    continue
-
                 ssr = self.get_ssr(popt, model)
+
                 if min_ssr is None or ssr < min_ssr:
                     min_ssr = ssr
                     min_popt = popt
                     min_model = model
 
+        self.current_model_object = min_model
         self.current_model_name = min_model.get_str(*min_popt)
+        self.mchain.add_transition(self.current_model_object, min_model)
         return lambda t: min_model(t, *min_popt)
 
     def push(self, t, out):
@@ -132,3 +106,32 @@ class ParametricModel(object):
 
     def __str__(self):
         return "{}(t) = {}".format(self.name, self.current_model_name)
+
+
+""" WARNING: Broken parallelization below"""
+
+def get_model_func(model_f):
+    def get_models(test_list):
+        try:
+            t_inp_array, t_out_array = test_list
+            popt, pcov = opt.curve_fit(
+                model_f, t_inp_array, t_out_array
+            )
+            return popt
+        except (RuntimeError, RuntimeWarning):
+            return list()
+        except TypeError:
+            return None
+
+    return get_models
+
+
+def parallel_model_selector(model, test_lists, num_workers=8):
+    pool = Pool(num_workers)
+    res = pool.map(
+        get_model_func, test_lists
+    )
+
+    return res
+
+

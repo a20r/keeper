@@ -10,6 +10,7 @@ import pylab as plt
 import numpy as np
 import collections
 import time
+import traceback
 
 
 class LivePredictorTests(unittest.TestCase):
@@ -55,7 +56,8 @@ class LivePredictorTests(unittest.TestCase):
                 YS = list()
                 current_time = time.time()
                 for t in np.linspace(
-                    0, current_time - self.pd.start_time + self.how_far,
+                    current_time - self.pd.start_time,
+                    current_time - self.pd.start_time + self.how_far,
                     self.num_parts
                 ):
                     ret_list = self.pd(t)
@@ -86,7 +88,10 @@ class LivePredictorTests(unittest.TestCase):
                 plt.draw()
                 plt.pause(0.001)
             except Exception as e:
-                print e
+                if str(e) != "Not enough data":
+                    traceback.print_exc()
+                    exit(1)
+
 
 if __name__ == "__main__":
     unittest.main()
